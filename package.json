@@ -1,0 +1,21 @@
+{
+  "name": "3_SecretosDeClaqueta",
+  "version": "1.0.0",
+  "description": "Archivo de rodajes: pósters, tendencias y secretos de claqueta con la API de TMDB.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "oxlint src/",
+    "format": "oxfmt src/",
+    "deploy": "pnpm run build && gh-pages -d dist"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "gh-pages": "^6.3.0",
+    "vite": "^8.3.7"
+  }
+}
