@@ -41,11 +41,6 @@ export function renderFavorites({ outlet, signal }) {
     const focusedId = focusedLink?.getAttribute("href")?.match(/\/movie\/(\d+)/)?.[1] ?? null;
     const hadFocus = Boolean(focusedLink);
 
-    summary.textContent =
-      favorites.length === 0
-        ? "Todavía no has guardado ninguna película."
-        : `${pluralize(favorites.length, "película guardada", "películas guardadas")} en tu archivo personal.`;
-
     if (favorites.length === 0) {
       emptyState.hidden = false;
       gridHost.replaceChildren();

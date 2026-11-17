@@ -8,7 +8,13 @@ import {
   isConfigured,
   searchMovies,
 } from "../api/tmdb.js";
-import { createMovieCard, createSkeletonGrid, skeletonCardMarkup } from "../components/movie-card.js";
+import {
+  createMovieCard,
+  createMovieGrid,
+  createSkeletonGrid,
+  skeletonCardMarkup,
+} from "../components/movie-card.js";
+import { mountHeroSlider } from "../components/hero-slider.js";
 import { initCarousel } from "../components/carousel.js";
 import { replaceRoute } from "../router.js";
 
@@ -68,11 +74,12 @@ function homeMarkup(initialQuery) {
   return html`
     <div class="home">
       <section class="hero container" aria-labelledby="hero-title">
+        <div class="hero__slider" data-hero-slider aria-hidden="true"></div>
         <h1 class="hero__title" id="hero-title">
-          Historias que <em>no salieron</em> en los créditos.
+          Descubre los mejores secretos de <em>Hollywood</em>
         </h1>
         <p class="hero__subtitle">
-          Pósters, leyendas y secretos de rodaje por película. Busca tu favorita y
+          Busca tu pelicula favorita y
           descubre lo que ocurrió antes, durante y después de la claqueta.
         </p>
         <search>
@@ -84,7 +91,7 @@ function homeMarkup(initialQuery) {
               id="movie-search"
               name="q"
               type="search"
-              placeholder="Busca una película: Dune, Kubrick, cine negro…"
+              placeholder="Busca una película"
               autocomplete="off"
               spellcheck="false"
               enterkeyhint="search"
@@ -143,9 +150,9 @@ function homeMarkup(initialQuery) {
             <div class="carousel" data-carousel>
               <ul class="carousel__track" data-carousel-track>
                 ${Array.from(
-                  { length: 6 },
-                  () => html`<li class="carousel__item">${skeletonCardMarkup()}</li>`,
-                )}
+    { length: 6 },
+    () => html`<li class="carousel__item">${skeletonCardMarkup()}</li>`,
+  )}
               </ul>
             </div>
           </div>
@@ -243,6 +250,8 @@ export async function renderHome({ outlet, query, signal }) {
     try {
       const movies = await getTrendingMovies({ signal });
       if (signal.aborted) return;
+
+      mountHeroSlider(outlet.querySelector("[data-hero-slider]"), movies, { signal });
 
       if (movies.length === 0) {
         trendingControls.hidden = true;

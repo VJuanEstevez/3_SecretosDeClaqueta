@@ -14,17 +14,17 @@ function castMarkup(cast) {
   return html`
     <ul class="cast">
       ${cast.map((person) => {
-        const initials = person.name
-          .split(/\s+/)
-          .slice(0, 2)
-          .map((word) => word.charAt(0))
-          .join("")
-          .toUpperCase();
+    const initials = person.name
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((word) => word.charAt(0))
+      .join("")
+      .toUpperCase();
 
-        return html`
+    return html`
           <li class="cast__item">
             ${person.profilePath
-              ? html`<img
+        ? html`<img
                   class="cast__avatar"
                   src="${profileUrl(person.profilePath)}"
                   alt=""
@@ -33,12 +33,12 @@ function castMarkup(cast) {
                   loading="lazy"
                   decoding="async"
                 />`
-              : html`<span class="cast__avatar cast__avatar--initials" aria-hidden="true">${initials}</span>`}
+        : html`<span class="cast__avatar cast__avatar--initials" aria-hidden="true">${initials}</span>`}
             <p class="cast__name">${person.name}</p>
             ${person.character ? html`<p class="cast__role">${person.character}</p>` : ""}
           </li>
         `;
-      })}
+  })}
     </ul>
   `;
 }
@@ -47,7 +47,7 @@ function secretsMarkup(secrets) {
   return html`
     <ol class="secrets">
       ${secrets.map(
-        (secret, index) => html`
+    (secret, index) => html`
           <li class="secret">
             <span class="secret__index" aria-hidden="true">${padNumber(index + 1)}</span>
             <div class="secret__content">
@@ -59,7 +59,7 @@ function secretsMarkup(secrets) {
             </div>
           </li>
         `,
-      )}
+  )}
     </ol>
   `;
 }
@@ -72,11 +72,6 @@ function detailMarkup(movie, cast, director) {
     <article class="detail">
       <div class="detail__backdrop" data-detail-backdrop aria-hidden="true"></div>
       <div class="container detail__inner">
-        <a class="detail__back" href="#/">
-          ${icon("arrowLeft")}
-          Volver a la cartelera
-        </a>
-
         <div class="detail__hero">
           <div class="detail__poster-frame">
             <img
@@ -91,7 +86,6 @@ function detailMarkup(movie, cast, director) {
           </div>
 
           <div class="detail__intro">
-            <p class="eyebrow">Archivo de claqueta</p>
             <h1 class="detail__title">${movie.title}</h1>
             ${movie.tagline ? html`<p class="detail__tagline">«${movie.tagline}»</p>` : ""}
 
@@ -101,38 +95,35 @@ function detailMarkup(movie, cast, director) {
                 <span>${movie.year}</span>
               </li>
               ${runtime
-                ? html`<li class="detail__meta-item">${icon("clock")}<span>${runtime}</span></li>`
-                : ""}
+      ? html`<li class="detail__meta-item">${icon("clock")}<span>${runtime}</span></li>`
+      : ""}
               <li class="detail__meta-item">
                 ${icon("star")}
                 <span>${formatRating(movie.rating)}</span>
                 <span class="visually-hidden">sobre 10</span>
               </li>
               ${director
-                ? html`<li class="detail__meta-item">${icon("user")}<span>${director}</span></li>`
-                : ""}
+      ? html`<li class="detail__meta-item">${icon("user")}<span>${director}</span></li>`
+      : ""}
+              ${movie.genres.length
+      ? html`<li class="detail__meta-item"><span class="detail-section__note">${movie.genres.join(" · ")}</span></li>`
+      : ""}
+              <li class="detail__meta-item detail__meta-item--action">
+                <button class="fav-button" type="button" data-detail-favorite>
+                  ${icon("heart")}
+                </button>
+              </li>
             </ul>
 
             ${movie.overview
-              ? html`<p class="detail__overview">${movie.overview}</p>`
-              : html`<p class="detail__overview">Sin sinopsis disponible en castellano.</p>`}
-
-            <div class="detail__actions">
-              <button class="fav-button" type="button" data-detail-favorite>
-                ${icon("heart")}
-                <span data-favorite-text>Guardar en favoritos</span>
-              </button>
-              ${movie.genres.length
-                ? html`<span class="detail-section__note">${movie.genres.join(" · ")}</span>`
-                : ""}
-            </div>
+      ? html`<p class="detail__overview">${movie.overview}</p>`
+      : html`<p class="detail__overview">Sin sinopsis disponible en castellano.</p>`}
           </div>
         </div>
 
         <section class="detail-section" aria-labelledby="cast-title">
           <div class="detail-section__head">
             <div>
-              <p class="eyebrow">Delante de la cámara</p>
               <h2 id="cast-title">Reparto</h2>
             </div>
             <p class="detail-section__note">${cast.length ? pluralize(cast.length, "intérprete", "intérpretes") : "Sin datos de reparto"}</p>
@@ -143,13 +134,17 @@ function detailMarkup(movie, cast, director) {
         <section class="detail-section" aria-labelledby="secrets-title">
           <div class="detail-section__head">
             <div>
-              <p class="eyebrow">Cinco puertas cerradas</p>
               <h2 id="secrets-title">Secretos de rodaje</h2>
             </div>
             <p class="detail-section__note">Contenido de archivo recreado para esta demostración.</p>
           </div>
           ${secretsMarkup(secrets)}
         </section>
+
+        <a class="detail__back detail__back--end" href="#/">
+          ${icon("arrowLeft")}
+          Volver a la cartelera
+        </a>
       </div>
     </article>
   `;
@@ -160,10 +155,6 @@ function skeletonMarkup({ posterSrc, title }) {
     <article class="detail">
       <div class="detail__backdrop" data-detail-backdrop aria-hidden="true"></div>
       <div class="container detail__inner">
-        <a class="detail__back" href="#/">
-          ${icon("arrowLeft")}
-          Volver a la cartelera
-        </a>
         <div class="detail__hero">
           <div class="detail__poster-frame">
             <img
@@ -186,6 +177,11 @@ function skeletonMarkup({ posterSrc, title }) {
             </div>
           </div>
         </div>
+
+        <a class="detail__back detail__back--end" href="#/">
+          ${icon("arrowLeft")}
+          Volver a la cartelera
+        </a>
       </div>
     </article>
   `;
@@ -209,13 +205,13 @@ function errorMarkup(error) {
 
   return html`
     <section class="page container" aria-labelledby="detail-error-title">
-      <a class="detail__back" href="#/">${icon("arrowLeft")} Volver a la cartelera</a>
       <div class="state state--error">
         <span class="state__icon">${icon("film")}</span>
         <h1 id="detail-error-title">${title}</h1>
         <p>${text}</p>
         <a class="btn btn--ghost" href="#/">Explorar tendencias</a>
       </div>
+      <a class="detail__back detail__back--end" href="#/">${icon("arrowLeft")} Volver a la cartelera</a>
     </section>
   `;
 }
@@ -235,13 +231,13 @@ export function prefetchMovie(id) {
   if (!Number.isFinite(numericId) || detailCache.has(numericId)) return;
   getMovieDetail(numericId)
     .then((data) => rememberDetail(numericId, data))
-    .catch(() => {});
+    .catch(() => { });
 }
 
 function bindFavorite(outlet, movie, signal) {
   const button = outlet.querySelector("[data-detail-favorite]");
   const label = outlet.querySelector("[data-favorite-text]");
-  if (!button || !label) return;
+  if (!button) return;
 
   const sync = () => {
     const active = isFavorite(movie.id);
@@ -250,7 +246,9 @@ function bindFavorite(outlet, movie, signal) {
       "aria-label",
       active ? `Quitar ${movie.title} de favoritos` : `Añadir ${movie.title} a favoritos`,
     );
-    label.textContent = active ? "En tus favoritos" : "Guardar en favoritos";
+    if (label) {
+      label.textContent = active ? "En tus favoritos" : "Guardar en favoritos";
+    }
   };
 
   button.addEventListener(

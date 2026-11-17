@@ -1,19 +1,22 @@
 import "./global/styles/main.css";
 import { html } from "./global/lib/dom.js";
 import { withPosterTransition } from "./global/lib/motion.js";
-import { mountHeader } from "./modules/components/header.js";
+import { mountHeader, setHeaderSearchVisible } from "./modules/components/header.js";
 import { initRouter, navigate } from "./modules/router.js";
+import { initTheme } from "./modules/state/theme.js";
 import { renderDetail } from "./modules/views/detail.js";
 import { renderFavorites } from "./modules/views/favorites.js";
 import { renderHome } from "./modules/views/home.js";
+
+initTheme();
 
 const outlet = document.getElementById("main");
 mountHeader(document.getElementById("site-header"));
 
 const routes = [
   { pattern: /^\/$/, view: renderHome },
-  { pattern: /^\/movie\/(\d+)$/, view: renderDetail },
-  { pattern: /^\/favorites$/, view: renderFavorites },
+  { pattern: /^\/movie\/(\d+)$/, view: renderDetail, headerSearch: true },
+  { pattern: /^\/favorites$/, view: renderFavorites, headerSearch: true },
 ];
 
 let controller = new AbortController();
@@ -51,6 +54,8 @@ async function renderRoute(route, state) {
   const match = routes
     .map((definition) => ({ definition, found: route.path.match(definition.pattern) }))
     .find((candidate) => candidate.found);
+
+  setHeaderSearchVisible(Boolean(match?.definition.headerSearch));
 
   window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   outlet.setAttribute("aria-busy", "true");

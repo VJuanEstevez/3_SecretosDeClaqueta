@@ -1,7 +1,17 @@
 import { html, toElement } from "../../global/lib/dom.js";
 import { icon } from "../../global/lib/icons.js";
 import { pluralize } from "../../global/lib/format.js";
+import { announce } from "../../global/lib/a11y.js";
+import { navigate } from "../router.js";
 import { favoriteCount, subscribe } from "../state/favorites.js";
+import { getTheme, subscribeTheme, toggleTheme } from "../state/theme.js";
+
+let headerSearch = null;
+
+export function setHeaderSearchVisible(visible) {
+  if (!headerSearch) return;
+  headerSearch.hidden = !visible;
+}
 
 export function mountHeader(header) {
   header.append(
@@ -16,14 +26,52 @@ export function mountHeader(header) {
             <span class="brand__sub">de claqueta</span>
           </span>
         </a>
-        <a class="favorites-link" href="#/favorites" data-favorites-link>
-          ${icon("heart")}
-          <span class="favorites-link__label">Favoritos</span>
-          <span class="favorites-link__count" data-favorites-count hidden>0</span>
-        </a>
+
+        <search class="site-header__search" data-header-search hidden>
+          <form class="search search--compact" data-header-search-form>
+            <label class="visually-hidden" for="header-search">Buscar películas</label>
+            <span class="search__icon">${icon("search")}</span>
+            <input
+              class="search__input"
+              id="header-search"
+              name="q"
+              type="search"
+              placeholder="Buscar una película…"
+              autocomplete="off"
+              spellcheck="false"
+              enterkeyhint="search"
+            />
+            <button class="search__submit" type="submit">Buscar</button>
+          </form>
+        </search>
+
+        <div class="header-actions">
+          <button class="theme-toggle" type="button" data-theme-toggle>
+            <span class="theme-toggle__icon" data-theme-icon="dark">${icon("sun")}</span>
+            <span class="theme-toggle__icon" data-theme-icon="light" hidden>${icon("moon")}</span>
+            <span class="visually-hidden" data-theme-label></span>
+          </button>
+
+          <a class="favorites-link" href="#/favorites" data-favorites-link>
+            ${icon("heart")}
+            <span class="favorites-link__label">Favoritos</span>
+            <span class="favorites-link__count" data-favorites-count hidden>0</span>
+          </a>
+        </div>
       </div>
     `),
   );
+
+  headerSearch = header.querySelector("[data-header-search]");
+  const searchForm = header.querySelector("[data-header-search-form]");
+  const searchInput = searchForm?.elements.namedItem("q");
+
+  searchForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const term = searchInput?.value.trim() ?? "";
+    if (!term) return;
+    navigate(`#/?q=${encodeURIComponent(term)}`);
+  });
 
   const link = header.querySelector("[data-favorites-link]");
   const count = header.querySelector("[data-favorites-count]");
@@ -45,6 +93,28 @@ export function mountHeader(header) {
 
   sync();
   subscribe(sync);
+
+  const themeButton = header.querySelector("[data-theme-toggle]");
+  const themeLabel = themeButton?.querySelector("[data-theme-label]");
+  const darkIcon = themeButton?.querySelector('[data-theme-icon="dark"]');
+  const lightIcon = themeButton?.querySelector('[data-theme-icon="light"]');
+
+  const syncTheme = () => {
+    const isDark = getTheme() === "dark";
+    if (darkIcon) darkIcon.hidden = !isDark;
+    if (lightIcon) lightIcon.hidden = isDark;
+    if (themeLabel) {
+      themeLabel.textContent = isDark ? "Cambiar a tema claro" : "Cambiar a tema oscuro";
+    }
+  };
+
+  themeButton?.addEventListener("click", () => {
+    toggleTheme();
+    announce(getTheme() === "dark" ? "Tema oscuro activado." : "Tema claro activado.");
+  });
+
+  syncTheme();
+  subscribeTheme(syncTheme);
 
   const onScroll = () => {
     header.classList.toggle("is-scrolled", window.scrollY > 8);
