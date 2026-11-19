@@ -19,7 +19,7 @@ export function mountHeader(header) {
       <div class="site-header__inner container">
         <a class="brand" href="#/" aria-label="Secretos de claqueta — Inicio">
           <span class="brand__mark">
-            ${icon("clapper", { className: "brand__mark-icon", strokeWidth: 1.5 })}
+            ${icon("clapper", { className: "brand__mark-icon", strokeWidth: 1 })}
           </span>
           <span class="brand__text">
             <span class="brand__name">Secretos</span>

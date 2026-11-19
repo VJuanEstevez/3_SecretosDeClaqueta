@@ -2,11 +2,11 @@ import { raw } from "./dom.js";
 
 const paths = {
   clapper: `
-    <rect x="4.6" y="11.4" width="16.4" height="8.6" rx="1.6" />
-    <path d="M5.4 11.4 21 7.4 21 4.3 5.4 8.3Z" />
-    <path d="m8.4 10.6 1.7-3.5M12.4 9.6l1.7-3.5M16.4 8.6l1.7-3.6" />
-    <path d="M8.4 14.8h9M8.4 17.4h5.5" />
-    <circle cx="4" cy="11.4" r="1.1" fill="currentColor" stroke="none" />
+    <rect x="4.8" y="11.3" width="15.6" height="8.2" rx="1.4" />
+    <path d="M5.2 11.3 20.5 7.5V4.6L5.2 8.4Z" />
+    <path d="m8.2 10.5 1.6-3.2M12.1 9.5l1.6-3.2M16 8.5l1.6-3.2" />
+    <path d="M8 14.6h8.8M8 17.1h5.2" />
+    <circle cx="4.1" cy="11.3" r=".8" fill="currentColor" stroke="none" />
   `,
   heart: `<path d="M12 20.4S4.6 16.1 4.6 11.2A4.05 4.05 0 0 1 12 8.2a4.05 4.05 0 0 1 7.4 3c0 4.9-7.4 9.2-7.4 9.2Z" />`,
   star: `<path d="m12 3.7 2.5 5.1 5.6.8-4.1 4 1 5.6-5-2.7-5 2.7 1-5.6-4.1-4 5.6-.8Z" />`,
