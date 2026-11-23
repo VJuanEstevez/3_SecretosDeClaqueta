@@ -3,6 +3,21 @@ import { prefersReducedMotion } from "./a11y.js";
 const TRANSITION_NAME = "movie-poster";
 const EASING = "cubic-bezier(0.22, 1, 0.36, 1)";
 
+let posterTransitionActive = false;
+
+export async function swapView(outlet, markup) {
+  if (posterTransitionActive || prefersReducedMotion() || typeof document.startViewTransition !== "function") {
+    outlet.innerHTML = String(markup);
+    return;
+  }
+
+  const transition = document.startViewTransition(() => {
+    outlet.innerHTML = String(markup);
+  });
+
+  await transition.updateCallbackDone;
+}
+
 export function withPosterTransition(source, update) {
   if (!source || prefersReducedMotion()) {
     update();
@@ -15,6 +30,7 @@ export function withPosterTransition(source, update) {
   }
 
   source.style.viewTransitionName = TRANSITION_NAME;
+  posterTransitionActive = true;
 
   const transition = document.startViewTransition(() => {
     update();
@@ -25,6 +41,7 @@ export function withPosterTransition(source, update) {
   transition.finished
     .catch(() => {})
     .finally(() => {
+      posterTransitionActive = false;
       source.style.viewTransitionName = "";
       const target = document.querySelector("[data-poster-transition]");
       target?.style.removeProperty("view-transition-name");
@@ -32,6 +49,7 @@ export function withPosterTransition(source, update) {
 }
 
 function flipPoster(source, update) {
+  posterTransitionActive = true;
   const start = source.getBoundingClientRect();
   const startRadius = getComputedStyle(source).borderRadius;
   const clone = source.cloneNode(true);
@@ -58,6 +76,7 @@ function flipPoster(source, update) {
   const target = document.querySelector("[data-poster-transition]");
   if (!target) {
     clone.remove();
+    posterTransitionActive = false;
     return;
   }
 
@@ -91,6 +110,7 @@ function flipPoster(source, update) {
   animation.finished
     .catch(() => {})
     .finally(() => {
+      posterTransitionActive = false;
       clone.remove();
       target.style.visibility = "";
     });

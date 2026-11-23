@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   root: "src",
-  base: "/3_SecretosDeClaqueta/",
+  base: './',
   envDir: "..",
   server: {
     port: 5173,

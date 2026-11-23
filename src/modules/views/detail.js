@@ -1,7 +1,10 @@
 import { html } from "../../global/lib/dom.js";
 import { icon } from "../../global/lib/icons.js";
 import { formatRating, formatRuntime, padNumber, pluralize } from "../../global/lib/format.js";
-import { announce } from "../../global/lib/a11y.js";
+import { announce, prefersReducedMotion } from "../../global/lib/a11y.js";
+import { downloadImage } from "../../global/lib/download.js";
+import { showFavoriteToast } from "../../global/lib/favorite-toast.js";
+import { swapView } from "../../global/lib/motion.js";
 import { backdropUrl, getMovieDetail, placeholderUrl, posterUrl, profileUrl } from "../api/tmdb.js";
 import { getSecrets, PHASE_LABELS } from "../data/secrets.js";
 import { isFavorite, subscribe, toggleFavorite } from "../state/favorites.js";
@@ -70,9 +73,9 @@ function detailMarkup(movie, cast, director) {
 
   return html`
     <article class="detail">
-      <div class="detail__backdrop" data-detail-backdrop aria-hidden="true"></div>
+
       <div class="container detail__inner">
-        <div class="detail__hero">
+        <div class="detail__hero" style="--hero-poster: url('${posterUrl(movie.posterPath, "w780")}')">
           <div class="detail__poster-frame">
             <img
               class="detail__poster"
@@ -112,6 +115,14 @@ function detailMarkup(movie, cast, director) {
                 <button class="fav-button" type="button" data-detail-favorite>
                   ${icon("heart")}
                 </button>
+                <button
+                  class="fav-button detail__download"
+                  type="button"
+                  data-detail-download
+                  aria-label="Descargar póster de ${movie.title}"
+                >
+                  ${icon("download")}
+                </button>
               </li>
             </ul>
 
@@ -126,7 +137,6 @@ function detailMarkup(movie, cast, director) {
             <div>
               <h2 id="cast-title">Reparto</h2>
             </div>
-            <p class="detail-section__note">${cast.length ? pluralize(cast.length, "intérprete", "intérpretes") : "Sin datos de reparto"}</p>
           </div>
           ${castMarkup(cast)}
         </section>
@@ -141,11 +151,10 @@ function detailMarkup(movie, cast, director) {
           ${secretsMarkup(secrets)}
         </section>
 
-        <a class="detail__back detail__back--end" href="#/">
-          ${icon("arrowLeft")}
-          Volver a la cartelera
-        </a>
       </div>
+      <button class="back-to-top" type="button" data-back-to-top aria-label="Volver arriba">
+        ${icon("arrowUp")}
+      </button>
     </article>
   `;
 }
@@ -155,7 +164,7 @@ function skeletonMarkup({ posterSrc, title }) {
     <article class="detail">
       <div class="detail__backdrop" data-detail-backdrop aria-hidden="true"></div>
       <div class="container detail__inner">
-        <div class="detail__hero">
+        <div class="detail__hero" style="--hero-poster: url('${posterSrc ?? placeholderUrl}')">
           <div class="detail__poster-frame">
             <img
               class="detail__poster"
@@ -178,10 +187,6 @@ function skeletonMarkup({ posterSrc, title }) {
           </div>
         </div>
 
-        <a class="detail__back detail__back--end" href="#/">
-          ${icon("arrowLeft")}
-          Volver a la cartelera
-        </a>
       </div>
     </article>
   `;
@@ -211,7 +216,6 @@ function errorMarkup(error) {
         <p>${text}</p>
         <a class="btn btn--ghost" href="#/">Explorar tendencias</a>
       </div>
-      <a class="detail__back detail__back--end" href="#/">${icon("arrowLeft")} Volver a la cartelera</a>
     </section>
   `;
 }
@@ -255,6 +259,7 @@ function bindFavorite(outlet, movie, signal) {
     "click",
     () => {
       const added = toggleFavorite(movie);
+      if (added) showFavoriteToast(movie.title);
       announce(added ? `${movie.title} añadida a favoritos.` : `${movie.title} eliminada de favoritos.`);
     },
     { signal },
@@ -265,9 +270,49 @@ function bindFavorite(outlet, movie, signal) {
   sync();
 }
 
-function paintDetail(outlet, data, signal) {
+function bindDownload(outlet, movie, signal) {
+  const button = outlet.querySelector("[data-detail-download]");
+  if (!button) return;
+
+  button.addEventListener(
+    "click",
+    () => {
+      const slug = movie.title
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "") || "pelicula";
+      downloadImage(posterUrl(movie.posterPath, "original"), `${slug}-poster.jpg`);
+    },
+    { signal },
+  );
+}
+
+function bindBackToTop(outlet, signal) {
+  const button = outlet.querySelector("[data-back-to-top]");
+  if (!button) return;
+
+  const sync = () => button.classList.toggle("is-visible", window.scrollY > 400);
+
+  button.addEventListener(
+    "click",
+    () => {
+      window.scrollTo({
+        top: 0,
+        behavior: prefersReducedMotion() ? "instant" : "smooth",
+      });
+    },
+    { signal },
+  );
+
+  window.addEventListener("scroll", sync, { signal, passive: true });
+  sync();
+}
+
+async function paintDetail(outlet, data, signal) {
   const { movie, cast, director } = data;
-  outlet.innerHTML = String(detailMarkup(movie, cast, director));
+  await swapView(outlet, detailMarkup(movie, cast, director));
 
   const backdrop = outlet.querySelector("[data-detail-backdrop]");
   const image = movie.posterPath
@@ -285,6 +330,8 @@ function paintDetail(outlet, data, signal) {
   );
 
   bindFavorite(outlet, movie, signal);
+  bindDownload(outlet, movie, signal);
+  bindBackToTop(outlet, signal);
   document.title = `${movie.title} (${movie.year}) — Secretos de claqueta`;
 }
 
@@ -292,14 +339,14 @@ export async function renderDetail({ outlet, params, state, signal }) {
   const id = Number(params[0]);
 
   if (!Number.isFinite(id)) {
-    outlet.innerHTML = String(errorMarkup({ kind: "http", status: 404 }));
+    await swapView(outlet, errorMarkup({ kind: "http", status: 404 }));
     document.title = "Película no disponible — Secretos de claqueta";
     return;
   }
 
   const cached = detailCache.get(id);
   if (cached) {
-    paintDetail(outlet, cached, signal);
+    await paintDetail(outlet, cached, signal);
     return;
   }
 
@@ -308,7 +355,7 @@ export async function renderDetail({ outlet, params, state, signal }) {
     title: state?.title ?? "",
   };
 
-  outlet.innerHTML = String(skeletonMarkup(initial));
+  await swapView(outlet, skeletonMarkup(initial));
   document.title = "Cargando película… — Secretos de claqueta";
 
   try {
@@ -316,10 +363,10 @@ export async function renderDetail({ outlet, params, state, signal }) {
     if (signal.aborted) return;
 
     rememberDetail(id, data);
-    paintDetail(outlet, data, signal);
+    await paintDetail(outlet, data, signal);
   } catch (error) {
     if (error?.kind === "abort" || signal.aborted) return;
-    outlet.innerHTML = String(errorMarkup(error));
+    await swapView(outlet, errorMarkup(error));
     document.title = "Película no disponible — Secretos de claqueta";
   }
 }

@@ -190,12 +190,24 @@ code {
   }
 }
 
+@keyframes view-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes view-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
 ::view-transition-old(root) {
-  animation-duration: 0.22s;
+  animation: 220ms var(--ease-out) both view-fade-out;
 }
 
 ::view-transition-new(root) {
-  animation-duration: 0.32s;
+  animation: 320ms var(--ease-out) both view-fade-in;
 }
 
 @media (prefers-reduced-motion: reduce) {

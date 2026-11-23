@@ -2,11 +2,12 @@ import { html, toElement } from "../../global/lib/dom.js";
 import { icon } from "../../global/lib/icons.js";
 import { formatRating } from "../../global/lib/format.js";
 import { announce } from "../../global/lib/a11y.js";
+import { showFavoriteToast } from "../../global/lib/favorite-toast.js";
 import { posterUrl, placeholderUrl } from "../api/tmdb.js";
 import { isFavorite, subscribe, toggleFavorite } from "../state/favorites.js";
 import { prefetchMovie } from "../views/detail.js";
 
-export function createMovieCard(movie, { signal } = {}) {
+export function createMovieCard(movie, { signal, hideDot = false } = {}) {
   const card = toElement(html`
     <article class="movie-card">
       <a
@@ -31,7 +32,7 @@ export function createMovieCard(movie, { signal } = {}) {
           <h3 class="movie-card__title">${movie.title}</h3>
           <p class="movie-card__meta">
             <span class="movie-card__year">${movie.year}</span>
-            <span class="movie-card__dot" aria-hidden="true"></span>
+            ${hideDot ? "" : html`<span class="movie-card__dot" aria-hidden="true"></span>`}
             <span class="movie-card__rating">
               ${icon("star")}
               <span class="visually-hidden">Puntuación:</span>
@@ -92,6 +93,7 @@ export function createMovieCard(movie, { signal } = {}) {
       button.classList.remove("is-bumping");
       void button.offsetWidth;
       button.classList.add("is-bumping");
+      if (added) showFavoriteToast(movie.title);
       announce(added ? `${movie.title} añadida a favoritos.` : `${movie.title} eliminada de favoritos.`);
     },
     { signal },

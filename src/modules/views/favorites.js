@@ -1,4 +1,5 @@
 import { html } from "../../global/lib/dom.js";
+import { swapView } from "../../global/lib/motion.js";
 import { icon } from "../../global/lib/icons.js";
 import { pluralize } from "../../global/lib/format.js";
 import { createMovieGrid } from "../components/movie-card.js";
@@ -12,7 +13,7 @@ function favoritesMarkup() {
         <p class="page__lead" data-favorites-summary></p>
       </header>
 
-      <div data-favorites-grid></div>
+      <div class="favorites-grid" data-favorites-grid></div>
 
       <div class="empty-state" data-favorites-empty hidden>
         <span class="empty-state__heart">${icon("heart")}</span>
@@ -27,8 +28,8 @@ function favoritesMarkup() {
   `;
 }
 
-export function renderFavorites({ outlet, signal }) {
-  outlet.innerHTML = String(favoritesMarkup());
+export async function renderFavorites({ outlet, signal }) {
+  await swapView(outlet, favoritesMarkup());
   document.title = "Favoritos — Secretos de claqueta";
 
   const summary = outlet.querySelector("[data-favorites-summary]");

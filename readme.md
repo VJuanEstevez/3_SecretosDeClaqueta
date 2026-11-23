@@ -52,14 +52,14 @@ src/
    ├─ components/          cabecera, cards, carrusel
    ├─ data/                secretos curados + generador de respaldo
    ├─ state/               favoritos en localStorage
-   ├─ views/               inicio, detalle y favoritos
+   ├─ views/               inicio, búsqueda, detalle y favoritos
    └─ router.js            rutas por hash
 ```
 
 ## Rutas
 
 - `#/` — portada con buscador y tendencias.
-- `#/?q=dune` — resultados de búsqueda.
+- `#/search?q=dune` — resultados de búsqueda en una vista propia.
 - `#/movie/:id` — ficha con reparto y cinco secretos.
 - `#/favorites` — lista guardada en el navegador.
 

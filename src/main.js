@@ -1,12 +1,13 @@
 import "./global/styles/main.css";
 import { html } from "./global/lib/dom.js";
-import { withPosterTransition } from "./global/lib/motion.js";
+import { swapView, withPosterTransition } from "./global/lib/motion.js";
 import { mountHeader, setHeaderSearchVisible } from "./modules/components/header.js";
 import { initRouter, navigate } from "./modules/router.js";
 import { initTheme } from "./modules/state/theme.js";
 import { renderDetail } from "./modules/views/detail.js";
 import { renderFavorites } from "./modules/views/favorites.js";
 import { renderHome } from "./modules/views/home.js";
+import { renderSearch } from "./modules/views/search.js";
 
 initTheme();
 
@@ -15,6 +16,7 @@ mountHeader(document.getElementById("site-header"));
 
 const routes = [
   { pattern: /^\/$/, view: renderHome },
+  { pattern: /^\/search$/, view: renderSearch, headerSearch: true },
   { pattern: /^\/movie\/(\d+)$/, view: renderDetail, headerSearch: true },
   { pattern: /^\/favorites$/, view: renderFavorites, headerSearch: true },
 ];
@@ -62,7 +64,7 @@ async function renderRoute(route, state) {
 
   try {
     if (!match) {
-      outlet.innerHTML = String(notFoundMarkup());
+      await swapView(outlet, notFoundMarkup());
       document.title = "Página no encontrada — Secretos de claqueta";
     } else {
       await match.definition.view({

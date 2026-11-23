@@ -13,6 +13,8 @@ const paths = {
   search: `<circle cx="11" cy="11" r="6.4" /><path d="m15.9 15.9 4.4 4.4" />`,
   arrowLeft: `<path d="M19 12H5" /><path d="m11 18-6-6 6-6" />`,
   arrowRight: `<path d="M5 12h14" /><path d="m13 6 6 6-6 6" />`,
+  arrowUp: `<path d="M12 19V5" /><path d="m6 11 6-6 6 6" />`,
+  download: `<path d="M12 3.5v11" /><path d="m7.5 10 4.5 4.5L16.5 10" /><path d="M4.5 19.5h15" />`,
   close: `<path d="m6 6 12 12M18 6 6 18" />`,
   calendar: `<rect x="3.5" y="5" width="17" height="15.5" rx="2.5" /><path d="M3.5 10h17M8 3.5V7M16 3.5V7" />`,
   clock: `<circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" />`,

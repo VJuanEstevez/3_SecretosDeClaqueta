@@ -13,55 +13,32 @@
   text-align: center;
 }
 
+/* Imagen y velo van en capas separadas para que el filtro no afecte al texto. */
+.hero::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  background-image: url("/Background.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: brightness(1.2);
+}
+
+.hero::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  background: var(--scrim-hero-image);
+}
+
 .hero search {
   display: block;
   width: 100%;
   max-width: 54rem;
   margin-inline: auto;
-}
-
-/* Slider de pósters de fondo ---------------------------------------------- */
-.hero__slider {
-  position: absolute;
-  inset: 0 calc(50% - 50vw);
-  z-index: -1;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.hero__slider::after {
-  position: absolute;
-  inset: 0;
-  content: "";
-  background: var(--scrim-hero);
-}
-
-.hero__slide {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  filter: blur(1.6rem) saturate(1.25) brightness(0.7);
-  transform: scale(1.12);
-  transition: opacity 1.6s var(--ease-in-out);
-  animation: hero-ken-burns 16s linear infinite alternate;
-  animation-play-state: paused;
-}
-
-.hero__slide.is-active {
-  opacity: 1;
-  animation-play-state: running;
-}
-
-@keyframes hero-ken-burns {
-  from {
-    transform: scale(1.12);
-  }
-  to {
-    transform: scale(1.24);
-  }
 }
 
 .hero__title {
@@ -131,45 +108,81 @@
   padding-block: clamp(1.25rem, 3vw, 2.5rem) clamp(3rem, 6vw, 6rem);
 }
 
-.detail__back {
-  display: inline-flex;
-  gap: 0.55rem;
-  align-items: center;
-  padding: 0.55rem 0.95rem 0.55rem 0.75rem;
-  margin-bottom: clamp(1.5rem, 4vw, 3rem);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--paper-dim);
-  border: 1px solid var(--stroke-1);
-  border-radius: var(--radius-pill);
-  background: var(--glass-1);
-  transition:
-    color var(--dur),
-    background var(--dur),
-    border-color var(--dur),
-    transform var(--dur) var(--ease-out);
-}
-
-.detail__back:hover {
+/* Volver arriba ---------------------------------------------------------- */
+.back-to-top {
+  position: fixed;
+  right: var(--gutter);
+  bottom: var(--gutter);
+  z-index: 95;
+  display: grid;
+  place-items: center;
+  width: 2.9rem;
+  height: 2.9rem;
   color: var(--paper);
-  background: var(--glass-2);
-  border-color: var(--stroke-2);
-  transform: translateX(-3px);
+  border: 1px solid var(--stroke-2);
+  border-radius: var(--radius-pill);
+  background: var(--header-bg-solid);
+  box-shadow: var(--shadow-card);
+  -webkit-backdrop-filter: blur(1rem);
+  backdrop-filter: blur(1rem);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(0.75rem);
+  transition:
+    opacity var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-out),
+    visibility var(--dur);
 }
 
-/* Al final de la ficha, alineado a la derecha. */
-.detail__back.detail__back--end {
-  display: flex;
-  width: fit-content;
-  margin-block: clamp(2.5rem, 5vw, 4rem) 0;
-  margin-inline: auto 0;
+.back-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.back-to-top .icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.back-to-top:hover {
+  color: var(--gold-text);
+  border-color: var(--accent-line);
 }
 
 .detail__hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: grid;
+  width: 100vw;
   grid-template-columns: minmax(0, 21rem) minmax(0, 1fr);
   gap: clamp(1.75rem, 4vw, 4rem);
   align-items: end;
+  padding-inline: max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter)));
+  margin-inline: calc(50% - 50vw);
+}
+
+/* El mismo póster se amplía y desenfoca como fondo ambiental del hero. */
+.detail__hero::before {
+  position: absolute;
+  inset: -2rem;
+  z-index: -2;
+  content: "";
+  background-image: var(--hero-poster);
+  background-position: center;
+  background-size: cover;
+  filter: blur(5px);
+  transform: scale(1.2);
+}
+
+/* Velo semitransparente adaptable al tema para asegurar el contraste. */
+.detail__hero::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  background: color-mix(in srgb, var(--page-bg) 72%, transparent);
 }
 
 .detail__poster-frame {
@@ -247,6 +260,16 @@
 
 .detail__meta-item--action .fav-button {
   padding: 0.4rem 0.85rem;
+}
+
+.detail__download .icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.detail__download:hover {
+  color: var(--gold-text);
+  border-color: var(--accent-line);
 }
 
 .detail__overview {
@@ -375,7 +398,8 @@
 /* Secretos ---------------------------------------------------------------- */
 .secrets {
   display: grid;
-  gap: 1rem;
+  justify-items: start;
+  gap: clamp(1rem, 2vw, 1.5rem);
   padding: 0;
   margin: 0;
   list-style: none;
@@ -383,6 +407,7 @@
 
 .secret {
   display: grid;
+  width: min(100%, 46rem);
   grid-template-columns: auto minmax(0, 1fr);
   gap: 0.35rem 1.35rem;
   padding: clamp(1.2rem, 2.4vw, 1.9rem);
@@ -401,6 +426,11 @@
   background: var(--surface-soft-hover);
   border-color: var(--accent-line);
   transform: translateY(-2px);
+}
+
+/* Las tarjetas pares se anclan al borde derecho para trazar el zigzag. */
+.secret:nth-child(even) {
+  justify-self: end;
 }
 
 .secret__index {
@@ -516,12 +546,27 @@
 
   .detail__poster-frame {
     width: min(60vw, 17rem);
+    margin-inline: auto;
+  }
+}
+
+/* En pantallas estrechas el zigzag se aplana: tarjetas a ancho completo. */
+@media (max-width: 48rem) {
+  .secrets {
+    justify-items: stretch;
+  }
+
+  .secret,
+  .secret:nth-child(even) {
+    width: 100%;
+    justify-self: stretch;
   }
 }
 
 @media (max-width: 34rem) {
   .detail__poster-frame {
     width: min(72vw, 16rem);
+    margin-inline: auto;
   }
 
   .secret {

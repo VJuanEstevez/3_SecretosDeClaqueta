@@ -41,6 +41,15 @@ export function mountHeader(header) {
               spellcheck="false"
               enterkeyhint="search"
             />
+            <button
+              class="search__clear"
+              type="button"
+              data-header-search-clear
+              aria-label="Borrar búsqueda"
+              hidden
+            >
+              ${icon("close")}
+            </button>
             <button class="search__submit" type="submit">Buscar</button>
           </form>
         </search>
@@ -53,7 +62,6 @@ export function mountHeader(header) {
           </button>
 
           <a class="favorites-link" href="#/favorites" data-favorites-link>
-            ${icon("heart")}
             <span class="favorites-link__label">Favoritos</span>
             <span class="favorites-link__count" data-favorites-count hidden>0</span>
           </a>
@@ -65,12 +73,33 @@ export function mountHeader(header) {
   headerSearch = header.querySelector("[data-header-search]");
   const searchForm = header.querySelector("[data-header-search-form]");
   const searchInput = searchForm?.elements.namedItem("q");
+  const clearButton = header.querySelector("[data-header-search-clear]");
+
+  const clearSearch = () => {
+    if (!searchInput) return;
+    searchInput.value = "";
+    if (clearButton) clearButton.hidden = true;
+    searchInput.focus();
+    announce("Búsqueda borrada.");
+  };
+
+  searchInput?.addEventListener("input", () => {
+    if (clearButton) clearButton.hidden = searchInput.value.length === 0;
+  });
+
+  clearButton?.addEventListener("click", clearSearch);
+
+  searchInput?.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || !searchInput.value) return;
+    event.preventDefault();
+    clearSearch();
+  });
 
   searchForm?.addEventListener("submit", (event) => {
     event.preventDefault();
     const term = searchInput?.value.trim() ?? "";
     if (!term) return;
-    navigate(`#/?q=${encodeURIComponent(term)}`);
+    navigate(`/search?q=${encodeURIComponent(term)}`);
   });
 
   const link = header.querySelector("[data-favorites-link]");
