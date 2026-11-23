@@ -29,6 +29,6 @@ const paths = {
 
 export function icon(name, { className = "icon", strokeWidth = 1.7 } = {}) {
   return raw(
-    `<svg class="${className}" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">${paths[name] ?? ""}</svg>`,
+    `<svg class="${className}" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">${paths[name] ?? ""}</svg>`
   );
 }

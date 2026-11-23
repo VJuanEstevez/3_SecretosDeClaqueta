@@ -67,7 +67,7 @@ export function mountHeader(header) {
           </a>
         </div>
       </div>
-    `),
+    `)
   );
 
   headerSearch = header.querySelector("[data-header-search]");
@@ -115,7 +115,9 @@ export function mountHeader(header) {
       link.dataset.active = String(total > 0);
       link.setAttribute(
         "aria-label",
-        total === 0 ? "Favoritos" : `Favoritos, ${pluralize(total, "película guardada", "películas guardadas")}`,
+        total === 0
+          ? "Favoritos"
+          : `Favoritos, ${pluralize(total, "película guardada", "películas guardadas")}`
       );
     }
   };

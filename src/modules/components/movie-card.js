@@ -72,7 +72,7 @@ export function createMovieCard(movie, { signal, hideDot = false } = {}) {
     () => {
       poster.src = placeholderUrl;
     },
-    { once: true, signal },
+    { once: true, signal }
   );
 
   function sync() {
@@ -80,7 +80,7 @@ export function createMovieCard(movie, { signal, hideDot = false } = {}) {
     button.setAttribute("aria-pressed", String(active));
     button.setAttribute(
       "aria-label",
-      active ? `Quitar ${movie.title} de favoritos` : `Añadir ${movie.title} a favoritos`,
+      active ? `Quitar ${movie.title} de favoritos` : `Añadir ${movie.title} a favoritos`
     );
     label.textContent = active ? "En tus favoritos" : "Añadir a favoritos";
   }
@@ -94,9 +94,11 @@ export function createMovieCard(movie, { signal, hideDot = false } = {}) {
       void button.offsetWidth;
       button.classList.add("is-bumping");
       if (added) showFavoriteToast(movie.title);
-      announce(added ? `${movie.title} añadida a favoritos.` : `${movie.title} eliminada de favoritos.`);
+      announce(
+        added ? `${movie.title} añadida a favoritos.` : `${movie.title} eliminada de favoritos.`
+      );
     },
-    { signal },
+    { signal }
   );
 
   sync();

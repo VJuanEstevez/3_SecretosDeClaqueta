@@ -9,7 +9,7 @@
 }
 
 html {
-  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   scroll-behavior: smooth;
 }
 
@@ -154,7 +154,7 @@ code {
     width: 1.9rem;
     height: 1px;
     content: "";
-    background: currentColor;
+    background: currentcolor;
     opacity: 0.6;
   }
 }

@@ -18,15 +18,33 @@ export function initCarousel(root, { signal, autoplay = true } = {}) {
     cycle = (track.scrollWidth + gap) / 2;
   };
 
-  root.addEventListener("pointerenter", () => { pointerInside = true; }, { signal });
-  root.addEventListener("pointerleave", () => { pointerInside = false; }, { signal });
-  root.addEventListener("focusin", () => { focusInside = true; }, { signal });
+  root.addEventListener(
+    "pointerenter",
+    () => {
+      pointerInside = true;
+    },
+    { signal }
+  );
+  root.addEventListener(
+    "pointerleave",
+    () => {
+      pointerInside = false;
+    },
+    { signal }
+  );
+  root.addEventListener(
+    "focusin",
+    () => {
+      focusInside = true;
+    },
+    { signal }
+  );
   root.addEventListener(
     "focusout",
     (event) => {
       if (!root.contains(event.relatedTarget)) focusInside = false;
     },
-    { signal },
+    { signal }
   );
 
   let observer = null;
@@ -69,6 +87,6 @@ export function initCarousel(root, { signal, autoplay = true } = {}) {
       cancelAnimationFrame(frameId);
       observer?.disconnect();
     },
-    { once: true },
+    { once: true }
   );
 }

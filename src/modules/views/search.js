@@ -42,7 +42,9 @@ export async function renderSearch({ outlet, query, signal }) {
       <div class="state">
         <span class="state__icon">${icon("film")}</span>
         <h2>Conecta tu clave de TMDB</h2>
-        <p>Añade <code>VITE_TMDB_API_KEY</code> al archivo <code>.env</code> y reinicia el servidor.</p>
+        <p>
+          Añade <code>VITE_TMDB_API_KEY</code> al archivo <code>.env</code> y reinicia el servidor.
+        </p>
       </div>
     `);
     return;

@@ -17,31 +17,35 @@ function castMarkup(cast) {
   return html`
     <ul class="cast">
       ${cast.map((person) => {
-    const initials = person.name
-      .split(/\s+/)
-      .slice(0, 2)
-      .map((word) => word.charAt(0))
-      .join("")
-      .toUpperCase();
+        const initials = person.name
+          .split(/\s+/)
+          .slice(0, 2)
+          .map((word) => word.charAt(0))
+          .join("")
+          .toUpperCase();
 
-    return html`
+        return html`
           <li class="cast__item">
-            ${person.profilePath
-        ? html`<img
-                  class="cast__avatar"
-                  src="${profileUrl(person.profilePath)}"
-                  alt=""
-                  width="185"
-                  height="185"
-                  loading="lazy"
-                  decoding="async"
-                />`
-        : html`<span class="cast__avatar cast__avatar--initials" aria-hidden="true">${initials}</span>`}
+            ${
+              person.profilePath
+                ? html`<img
+                    class="cast__avatar"
+                    src="${profileUrl(person.profilePath)}"
+                    alt=""
+                    width="185"
+                    height="185"
+                    loading="lazy"
+                    decoding="async"
+                  />`
+                : html`<span class="cast__avatar cast__avatar--initials" aria-hidden="true"
+                    >${initials}</span
+                  >`
+            }
             <p class="cast__name">${person.name}</p>
             ${person.character ? html`<p class="cast__role">${person.character}</p>` : ""}
           </li>
         `;
-  })}
+      })}
     </ul>
   `;
 }
@@ -50,7 +54,7 @@ function secretsMarkup(secrets) {
   return html`
     <ol class="secrets">
       ${secrets.map(
-    (secret, index) => html`
+        (secret, index) => html`
           <li class="secret">
             <span class="secret__index" aria-hidden="true">${padNumber(index + 1)}</span>
             <div class="secret__content">
@@ -61,8 +65,8 @@ function secretsMarkup(secrets) {
               <p class="secret__text">${secret.text}</p>
             </div>
           </li>
-        `,
-  )}
+        `
+      )}
     </ol>
   `;
 }
@@ -73,9 +77,11 @@ function detailMarkup(movie, cast, director) {
 
   return html`
     <article class="detail">
-
       <div class="container detail__inner">
-        <div class="detail__hero" style="--hero-poster: url('${posterUrl(movie.posterPath, "w780")}')">
+        <div
+          class="detail__hero"
+          style="--hero-poster: url('${posterUrl(movie.posterPath, "w780")}')"
+        >
           <div class="detail__poster-frame">
             <img
               class="detail__poster"
@@ -97,20 +103,28 @@ function detailMarkup(movie, cast, director) {
                 ${icon("calendar")}
                 <span>${movie.year}</span>
               </li>
-              ${runtime
-      ? html`<li class="detail__meta-item">${icon("clock")}<span>${runtime}</span></li>`
-      : ""}
+              ${
+                runtime
+                  ? html`<li class="detail__meta-item">${icon("clock")}<span>${runtime}</span></li>`
+                  : ""
+              }
               <li class="detail__meta-item">
                 ${icon("star")}
                 <span>${formatRating(movie.rating)}</span>
                 <span class="visually-hidden">sobre 10</span>
               </li>
-              ${director
-      ? html`<li class="detail__meta-item">${icon("user")}<span>${director}</span></li>`
-      : ""}
-              ${movie.genres.length
-      ? html`<li class="detail__meta-item"><span class="detail-section__note">${movie.genres.join(" · ")}</span></li>`
-      : ""}
+              ${
+                director
+                  ? html`<li class="detail__meta-item">${icon("user")}<span>${director}</span></li>`
+                  : ""
+              }
+              ${
+                movie.genres.length
+                  ? html`<li class="detail__meta-item">
+                      <span class="detail-section__note">${movie.genres.join(" · ")}</span>
+                    </li>`
+                  : ""
+              }
               <li class="detail__meta-item detail__meta-item--action">
                 <button class="fav-button" type="button" data-detail-favorite>
                   ${icon("heart")}
@@ -126,9 +140,11 @@ function detailMarkup(movie, cast, director) {
               </li>
             </ul>
 
-            ${movie.overview
-      ? html`<p class="detail__overview">${movie.overview}</p>`
-      : html`<p class="detail__overview">Sin sinopsis disponible en castellano.</p>`}
+            ${
+              movie.overview
+                ? html`<p class="detail__overview">${movie.overview}</p>`
+                : html`<p class="detail__overview">Sin sinopsis disponible en castellano.</p>`
+            }
           </div>
         </div>
 
@@ -146,11 +162,12 @@ function detailMarkup(movie, cast, director) {
             <div>
               <h2 id="secrets-title">Secretos de rodaje</h2>
             </div>
-            <p class="detail-section__note">Contenido de archivo recreado para esta demostración.</p>
+            <p class="detail-section__note">
+              Contenido de archivo recreado para esta demostración.
+            </p>
           </div>
           ${secretsMarkup(secrets)}
         </section>
-
       </div>
       <button class="back-to-top" type="button" data-back-to-top aria-label="Volver arriba">
         ${icon("arrowUp")}
@@ -186,7 +203,6 @@ function skeletonMarkup({ posterSrc, title }) {
             </div>
           </div>
         </div>
-
       </div>
     </article>
   `;
@@ -235,7 +251,7 @@ export function prefetchMovie(id) {
   if (!Number.isFinite(numericId) || detailCache.has(numericId)) return;
   getMovieDetail(numericId)
     .then((data) => rememberDetail(numericId, data))
-    .catch(() => { });
+    .catch(() => {});
 }
 
 function bindFavorite(outlet, movie, signal) {
@@ -248,7 +264,7 @@ function bindFavorite(outlet, movie, signal) {
     button.setAttribute("aria-pressed", String(active));
     button.setAttribute(
       "aria-label",
-      active ? `Quitar ${movie.title} de favoritos` : `Añadir ${movie.title} a favoritos`,
+      active ? `Quitar ${movie.title} de favoritos` : `Añadir ${movie.title} a favoritos`
     );
     if (label) {
       label.textContent = active ? "En tus favoritos" : "Guardar en favoritos";
@@ -260,9 +276,11 @@ function bindFavorite(outlet, movie, signal) {
     () => {
       const added = toggleFavorite(movie);
       if (added) showFavoriteToast(movie.title);
-      announce(added ? `${movie.title} añadida a favoritos.` : `${movie.title} eliminada de favoritos.`);
+      announce(
+        added ? `${movie.title} añadida a favoritos.` : `${movie.title} eliminada de favoritos.`
+      );
     },
-    { signal },
+    { signal }
   );
 
   const unsubscribe = subscribe(sync);
@@ -277,15 +295,16 @@ function bindDownload(outlet, movie, signal) {
   button.addEventListener(
     "click",
     () => {
-      const slug = movie.title
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "") || "pelicula";
+      const slug =
+        movie.title
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "") || "pelicula";
       downloadImage(posterUrl(movie.posterPath, "original"), `${slug}-poster.jpg`);
     },
-    { signal },
+    { signal }
   );
 }
 
@@ -303,7 +322,7 @@ function bindBackToTop(outlet, signal) {
         behavior: prefersReducedMotion() ? "instant" : "smooth",
       });
     },
-    { signal },
+    { signal }
   );
 
   window.addEventListener("scroll", sync, { signal, passive: true });
@@ -326,7 +345,7 @@ async function paintDetail(outlet, data, signal) {
     () => {
       poster.src = placeholderUrl;
     },
-    { once: true, signal },
+    { once: true, signal }
   );
 
   bindFavorite(outlet, movie, signal);

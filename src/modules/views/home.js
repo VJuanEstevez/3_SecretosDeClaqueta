@@ -52,8 +52,8 @@ function homeMarkup(initialQuery) {
           Descubre los mejores secretos de <em>Hollywood</em>
         </h1>
         <p class="hero__subtitle">
-          Busca tu pelicula favorita y
-          descubre lo que ocurrió antes, durante y después de la claqueta.
+          Busca tu pelicula favorita y descubre lo que ocurrió antes, durante y después de la
+          claqueta.
         </p>
         <search>
           <form class="search" data-search-form>
@@ -96,9 +96,9 @@ function homeMarkup(initialQuery) {
             <div class="carousel" data-carousel>
               <ul class="carousel__track" data-carousel-track>
                 ${Array.from(
-    { length: 6 },
-    () => html`<li class="carousel__item">${skeletonCardMarkup()}</li>`,
-  )}
+                  { length: 6 },
+                  () => html`<li class="carousel__item">${skeletonCardMarkup()}</li>`
+                )}
               </ul>
             </div>
           </div>
@@ -123,12 +123,10 @@ export async function renderHome({ outlet, query, signal }) {
     container.querySelector("[data-retry]")?.addEventListener(
       "click",
       () => {
-        container.innerHTML = String(
-          html`<div class="state"><p>Cargando de nuevo…</p></div>`,
-        );
+        container.innerHTML = String(html`<div class="state"><p>Cargando de nuevo…</p></div>`);
         retry();
       },
-      { signal },
+      { signal }
     );
   };
 
@@ -143,12 +141,12 @@ export async function renderHome({ outlet, query, signal }) {
       if (signal.aborted) return;
 
       if (movies.length === 0) {
-          trendingBody.innerHTML = String(
+        trendingBody.innerHTML = String(
           errorMarkup({
             title: "Sin tendencias disponibles",
             text: "TMDB no devolvió resultados esta vez. Inténtalo de nuevo en un momento.",
             retry: true,
-          }),
+          })
         );
         bindRetry(trendingBody, loadTrending);
         return;
@@ -176,7 +174,7 @@ export async function renderHome({ outlet, query, signal }) {
 
       track.append(
         ...visibleMovies.map((movie) => createItem(movie)),
-        ...visibleMovies.map((movie) => createItem(movie, true)),
+        ...visibleMovies.map((movie) => createItem(movie, true))
       );
 
       const carousel = document.createElement("div");
@@ -197,7 +195,7 @@ export async function renderHome({ outlet, query, signal }) {
               ? "Falta la clave de API de TMDB en el archivo .env."
               : "Revisa tu conexión y vuelve a intentarlo.",
           retry: true,
-        }),
+        })
       );
       bindRetry(trendingBody, loadTrending);
     }
@@ -209,7 +207,7 @@ export async function renderHome({ outlet, query, signal }) {
       clearButton.hidden = input.value.length === 0;
       if (input.value.trim().length === 0) replaceRoute("#/");
     },
-    { signal },
+    { signal }
   );
 
   form.addEventListener(
@@ -219,7 +217,7 @@ export async function renderHome({ outlet, query, signal }) {
       const term = input.value.trim();
       if (term) navigate(`/search?q=${encodeURIComponent(term)}`);
     },
-    { signal },
+    { signal }
   );
 
   clearButton.addEventListener(
@@ -231,7 +229,7 @@ export async function renderHome({ outlet, query, signal }) {
       input.focus();
       announce("Búsqueda borrada.");
     },
-    { signal },
+    { signal }
   );
 
   input.addEventListener(
@@ -244,7 +242,7 @@ export async function renderHome({ outlet, query, signal }) {
       replaceRoute("#/");
       announce("Búsqueda borrada.");
     },
-    { signal },
+    { signal }
   );
 
   loadTrending();

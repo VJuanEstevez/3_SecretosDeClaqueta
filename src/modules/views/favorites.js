@@ -19,8 +19,8 @@ function favoritesMarkup() {
         <span class="empty-state__heart">${icon("heart")}</span>
         <h2>Tu lista está en blanco</h2>
         <p>
-          Guarda las películas que quieras revisitar. Sus secretos de rodaje seguirán aquí
-          cuando vuelvas.
+          Guarda las películas que quieras revisitar. Sus secretos de rodaje seguirán aquí cuando
+          vuelvas.
         </p>
         <a class="btn btn--gold" href="#/">Explorar tendencias</a>
       </div>

@@ -31,8 +31,8 @@ function notFoundMarkup() {
       <p class="eyebrow">Fuera de plano</p>
       <h1 class="page__title" id="not-found-title">Esta página no existe</h1>
       <p class="page__lead">
-        El enlace que has seguido no forma parte del archivo. Vuelve a la cartelera para
-        seguir explorando secretos de rodaje.
+        El enlace que has seguido no forma parte del archivo. Vuelve a la cartelera para seguir
+        explorando secretos de rodaje.
       </p>
       <p class="page__lead">
         <a class="btn btn--gold" href="#/">Volver a la cartelera</a>

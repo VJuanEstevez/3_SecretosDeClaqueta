@@ -6,7 +6,11 @@ const EASING = "cubic-bezier(0.22, 1, 0.36, 1)";
 let posterTransitionActive = false;
 
 export async function swapView(outlet, markup) {
-  if (posterTransitionActive || prefersReducedMotion() || typeof document.startViewTransition !== "function") {
+  if (
+    posterTransitionActive ||
+    prefersReducedMotion() ||
+    typeof document.startViewTransition !== "function"
+  ) {
     outlet.innerHTML = String(markup);
     return;
   }
@@ -104,7 +108,7 @@ function flipPoster(source, update) {
         borderRadius: endRadius,
       },
     ],
-    { duration: 520, easing: EASING, fill: "forwards" },
+    { duration: 520, easing: EASING, fill: "forwards" }
   );
 
   animation.finished
